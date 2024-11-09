@@ -31,8 +31,7 @@ public class Program
                         .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                         .Enrich.FromLogContext()
                         .WriteTo.Async(c => c.File("Logs/logs.txt"))
-                        .WriteTo.Async(c => c.Console())
-                        .WriteTo.Async(c => c.AbpStudio(services));
+                        .WriteTo.Async(c => c.Console());
                 });
             await builder.AddApplicationAsync<FluentChatBlazorModule>();
             var app = builder.Build();
