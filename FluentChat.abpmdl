@@ -1,0 +1,85 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.Account": {
+      "version": "8.3.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "8.3.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.Identity": {
+      "version": "8.3.0",
+      "isInstalled": true
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "8.3.0",
+      "isInstalled": true
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "FluentChat.Application": {
+      "path": "src/FluentChat.Application/FluentChat.Application.abppkg",
+      "folder": "src"
+    },
+    "FluentChat.Application.Tests": {
+      "path": "test/FluentChat.Application.Tests/FluentChat.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "FluentChat.Domain.Shared": {
+      "path": "src/FluentChat.Domain.Shared/FluentChat.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "FluentChat.Application.Contracts": {
+      "path": "src/FluentChat.Application.Contracts/FluentChat.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "FluentChat.HttpApi": {
+      "path": "src/FluentChat.HttpApi/FluentChat.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "FluentChat.HttpApi.Client": {
+      "path": "src/FluentChat.HttpApi.Client/FluentChat.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "FluentChat.EntityFrameworkCore.Tests": {
+      "path": "test/FluentChat.EntityFrameworkCore.Tests/FluentChat.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "FluentChat.EntityFrameworkCore": {
+      "path": "src/FluentChat.EntityFrameworkCore/FluentChat.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "FluentChat.TestBase": {
+      "path": "test/FluentChat.TestBase/FluentChat.TestBase.abppkg",
+      "folder": "test"
+    },
+    "FluentChat.Domain.Tests": {
+      "path": "test/FluentChat.Domain.Tests/FluentChat.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "FluentChat.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/FluentChat.HttpApi.Client.ConsoleTestApp/FluentChat.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "FluentChat.DbMigrator": {
+      "path": "src/FluentChat.DbMigrator/FluentChat.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "FluentChat.Blazor": {
+      "path": "src/FluentChat.Blazor/FluentChat.Blazor.abppkg",
+      "folder": "src"
+    },
+    "FluentChat.Domain": {
+      "path": "src/FluentChat.Domain/FluentChat.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}

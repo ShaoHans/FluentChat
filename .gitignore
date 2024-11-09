@@ -262,3 +262,4 @@ paket-files/
 # IdentityServer temp files
 tempkey.rsa
 tempkey.jwk
+/src/FluentChat.DbMigrator/Logs/*
