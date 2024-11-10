@@ -44,6 +44,7 @@ public class FluentChatMenuContributor : IMenuContributor
         //}
 
         administration.SetSubItemOrder(IdentityMenuNames.GroupName, 2);
+        administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
         //administration.SetSubItemOrder(SettingManagementMenus.GroupName, 3);
         //administration.SetSubItemOrder(AuditLoggingMenuNames.Default, 3);
 

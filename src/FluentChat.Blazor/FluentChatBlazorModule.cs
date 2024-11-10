@@ -136,16 +136,17 @@ public class FluentChatBlazorModule : AbpModule
             options.RouterAdditionalAssemblies = [typeof(Home).Assembly];
 
             // other settings
-            //options.TitleBar = new TitleBarSettings
-            //{
-            //    ShowLanguageMenu = false,
-            //    Title = "CRM"
-            //};
+            options.TitleBar = new TitleBarSettings
+            {
+                Title = "Fluent Chat",
+                ShowGithubLink = false,
+            };
             //options.LoginPage = new LoginPageSettings
             //{
             //    LogoPath = "xxx/xx.png"
             //};
             options.Theme = new ThemeSettings { EnablePremiumTheme = true, };
+
         });
 
         // Configure AbpMultiTenancyOptions, this will affect login page that whether need to switch tenants
@@ -164,7 +165,6 @@ public class FluentChatBlazorModule : AbpModule
             // if you don't want to use the default language list, you can clear it and add your own languages
             options.Languages.Clear();
             options.Languages.Add(new LanguageInfo("en", "en", "English"));
-            options.Languages.Add(new LanguageInfo("fr", "fr", "Français"));
             options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
         });
 
