@@ -15,6 +15,7 @@
 
   <ItemGroup>
 		<PackageReference Include="AbpRadzen.Blazor.Server.UI" Version="0.1.6" />
+		<PackageReference Include="Markdig" Version="0.38.0" />
 		<ProjectReference Include="..\FluentChat.Application\FluentChat.Application.csproj" />
     <ProjectReference Include="..\FluentChat.HttpApi\FluentChat.HttpApi.csproj" />
     <ProjectReference Include="..\FluentChat.EntityFrameworkCore\FluentChat.EntityFrameworkCore.csproj" />

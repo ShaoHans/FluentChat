@@ -1,0 +1,46 @@
+﻿@page "/chat"
+@using System.Collections.Generic
+@using FluentChat.Blazor.Models
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+
+<RadzenStack Orientation="Orientation.Vertical" Gap="3rem" class="rz-p-12">
+    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Right">
+        <RadzenGravatar Email="admin@fluentchat.ai" /><strong>TextAlign.Right</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
+        @((MarkupString)test)
+    </RadzenText>
+    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">
+        <RadzenGravatar Email="info@radzen.com" /><strong>TextAlign.Left</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
+    </RadzenText>
+
+    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.End">
+        <RadzenGravatar Email="admin@fluentchat.ai" /><strong>TextAlign.End</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
+    </RadzenText>
+    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Start">
+        <RadzenGravatar Email="info@radzen.com" /><strong>TextAlign.Start</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
+    </RadzenText>
+</RadzenStack>
+
+@code {
+    private List<ChatMessage> messages = new List<ChatMessage>();
+    private string userMessage = "";
+
+    private void SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(userMessage))
+        {
+            messages.Add(new ChatMessage { Content = userMessage, IsUser = true, Timestamp = DateTime.Now });
+
+            messages.Add(new ChatMessage { Content = "This is a response from ChatGPT.", IsUser = false, Timestamp = DateTime.Now.AddSeconds(1) });
+
+            userMessage = string.Empty;
+        }
+    }
+
+    private string GetMessageStyle(bool isUser)
+    {
+        return isUser ? "background-color: #daf8e3; text-align: right;" : "background-color: #f1f1f1; text-align: left;";
+    }
+
+    private string test = @Markdig.Markdown.ToHtml("**ChatGPT Response**\n\nThis is a _sample_ markdown response with a list:\n\n- Item 1\n- Item 2");
+}

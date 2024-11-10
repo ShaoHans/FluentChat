@@ -30,6 +30,17 @@ public class FluentChatMenuContributor : IMenuContributor
             )
         );
 
+        context.Menu.Items.Insert(
+            1,
+            new ApplicationMenuItem(
+                FluentChatMenus.Home,
+                l["Menu:Chat"],
+                "/chat",
+                icon: "chat",
+                order: 1
+            )
+        );
+
         //Administration
         var administration = context.Menu.GetAdministration();
         administration.Order = 100;

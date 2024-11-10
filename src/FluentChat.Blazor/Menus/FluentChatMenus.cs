@@ -6,5 +6,5 @@ public class FluentChatMenus
     public const string Home = Prefix + ".Home";
 
     //Add your menu items here...
-
+    public const string Chat = Prefix + ".Chat";
 }
