@@ -15,6 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Microsoft.SemanticKernel;
+
 using OpenIddict.Server.AspNetCore;
 using OpenIddict.Validation.AspNetCore;
 using Volo.Abp;
@@ -125,6 +127,7 @@ public class FluentChatBlazorModule : AbpModule
         ConfigureVirtualFileSystem(hostingEnvironment);
         ConfigureSwaggerServices(context.Services);
         ConfigureAutoApiControllers();
+        ConfigureOllama(context.Services);
     }
 
     private void ConfigureAbpRadzenUI()
@@ -247,6 +250,14 @@ public class FluentChatBlazorModule : AbpModule
         {
             options.AddMaps<FluentChatBlazorModule>();
         });
+    }
+
+    private void ConfigureOllama(IServiceCollection services)
+    {
+        services.AddKernel();
+#pragma warning disable SKEXP0070
+        services.AddOllamaChatCompletion("phi-2.Q3_K_S", new Uri("http://localhost:11434"), "Ollama");
+#pragma warning restore SKEXP0070
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
