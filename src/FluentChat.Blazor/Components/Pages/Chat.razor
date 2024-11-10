@@ -1,6 +1,5 @@
 ﻿@page "/chat"
 @using System.Collections.Generic
-@using FluentChat.Blazor.Models
 @inject DialogService DialogService
 @inject NotificationService NotificationService
 
@@ -21,21 +20,19 @@
     </RadzenText>
 </RadzenStack>
 
+<RadzenStack Orientation="Orientation.Vertical" Gap="3rem" class="rz-p-12">
+    <RadzenRow>
+        <RadzenColumn Size="10" >
+            <RadzenTextBox Style="width:100%" />
+        </RadzenColumn>
+        <RadzenColumn Size="2">
+            <RadzenButton Icon="send" />
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenStack>
+
 @code {
-    private List<ChatMessage> messages = new List<ChatMessage>();
-    private string userMessage = "";
-
-    private void SendMessage()
-    {
-        if (!string.IsNullOrWhiteSpace(userMessage))
-        {
-            messages.Add(new ChatMessage { Content = userMessage, IsUser = true, Timestamp = DateTime.Now });
-
-            messages.Add(new ChatMessage { Content = "This is a response from ChatGPT.", IsUser = false, Timestamp = DateTime.Now.AddSeconds(1) });
-
-            userMessage = string.Empty;
-        }
-    }
+    
 
     private string GetMessageStyle(bool isUser)
     {
