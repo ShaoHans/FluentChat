@@ -26,7 +26,7 @@
 <RadzenStack Orientation="Orientation.Vertical" Gap="3rem" class="rz-p-12">
     <RadzenRow>
         <RadzenColumn Size="10" >
-            <RadzenTextBox Style="width:100%" Value="@msg" />
+            <RadzenTextBox Style="width:100%" @bind-Value="@msg" />
         </RadzenColumn>
         <RadzenColumn Size="2">
             <RadzenButton Icon="send" Click="SendAsync" />
@@ -38,7 +38,7 @@
     IChatCompletionService chatService = default!;
     string msg = "";
     StringBuilder content = new StringBuilder();
-    ChatHistory chatHistory = new ChatHistory("你是一位资深.net开发者，精通各种.net框架");
+    ChatHistory chatHistory = new ChatHistory();
     OpenAIPromptExecutionSettings executionSettings = new OpenAIPromptExecutionSettings
         {
             Temperature = 0.1
