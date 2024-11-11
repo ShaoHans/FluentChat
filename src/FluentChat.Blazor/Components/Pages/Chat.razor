@@ -19,7 +19,7 @@
         <RadzenGravatar Email="admin@fluentchat.ai" /><strong>TextAlign.End</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
     </RadzenText>
     <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Start">
-        <RadzenGravatar Email="info@radzen.com" /><strong>AI</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(content.ToString()))
+        <RadzenGravatar Email="info@radzen.com" /><strong>AI助手</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(content.ToString()))
     </RadzenText>
 </RadzenStack>
 
@@ -38,7 +38,7 @@
     IChatCompletionService chatService = default!;
     string msg = "";
     StringBuilder content = new StringBuilder();
-    ChatHistory chatHistory = new ChatHistory();
+    ChatHistory chatHistory = new ChatHistory("你是一位资深.net开发者，精通各种.net框架");
     OpenAIPromptExecutionSettings executionSettings = new OpenAIPromptExecutionSettings
         {
             Temperature = 0.1
