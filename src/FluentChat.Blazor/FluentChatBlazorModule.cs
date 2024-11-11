@@ -256,7 +256,7 @@ public class FluentChatBlazorModule : AbpModule
     {
         services.AddKernel();
 #pragma warning disable SKEXP0070
-        services.AddOllamaChatCompletion("phi-2.Q3_K_S", new Uri("http://localhost:11434"), "Ollama");
+        services.AddOllamaChatCompletion("llama3.2", new Uri("http://localhost:11434"), "Ollama");
 #pragma warning restore SKEXP0070
     }
 

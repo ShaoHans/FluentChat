@@ -2,6 +2,8 @@
 @using System.Collections.Generic
 @using Microsoft.SemanticKernel
 @using Microsoft.SemanticKernel.ChatCompletion
+@using Microsoft.SemanticKernel.Connectors.OpenAI
+@using System.Text
 @inject Kernel Kernel
 
 <RadzenStack Orientation="Orientation.Vertical" Gap="3rem" class="rz-p-12">
@@ -17,33 +19,51 @@
         <RadzenGravatar Email="admin@fluentchat.ai" /><strong>TextAlign.End</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
     </RadzenText>
     <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Start">
-        <RadzenGravatar Email="info@radzen.com" /><strong>TextAlign.Start</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
+        <RadzenGravatar Email="info@radzen.com" /><strong>AI</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(content.ToString()))
     </RadzenText>
 </RadzenStack>
 
 <RadzenStack Orientation="Orientation.Vertical" Gap="3rem" class="rz-p-12">
     <RadzenRow>
         <RadzenColumn Size="10" >
-            <RadzenTextBox Style="width:100%" Value="你是谁？用中文回答" />
+            <RadzenTextBox Style="width:100%" Value="@msg" />
         </RadzenColumn>
         <RadzenColumn Size="2">
-            <RadzenButton Icon="send" />
+            <RadzenButton Icon="send" Click="SendAsync" />
         </RadzenColumn>
     </RadzenRow>
 </RadzenStack>
 
 @code {
-    IChatCompletionService chatCompletionService = default!;
-
+    IChatCompletionService chatService = default!;
+    string msg = "";
+    StringBuilder content = new StringBuilder();
+    ChatHistory chatHistory = new ChatHistory();
+    OpenAIPromptExecutionSettings executionSettings = new OpenAIPromptExecutionSettings
+        {
+            Temperature = 0.1
+        };
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        chatCompletionService = Kernel.GetRequiredService<IChatCompletionService>("Ollama");
+        chatService = Kernel.GetRequiredService<IChatCompletionService>("Ollama");
     }
 
     private string GetMessageStyle(bool isUser)
     {
         return isUser ? "background-color: #daf8e3; text-align: right;" : "background-color: #f1f1f1; text-align: left;";
+    }
+
+    async Task SendAsync()
+    {
+        chatHistory.AddUserMessage(msg);
+        content.Clear();
+        await foreach (var message in chatService.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings, Kernel))
+        {
+            content.Append(message.Content);
+        }
+
+        chatHistory.AddAssistantMessage(content.ToString());
     }
 
     private string test = @Markdig.Markdown.ToHtml("**ChatGPT Response**\n\nThis is a _sample_ markdown response with a list:\n\n- Item 1\n- Item 2");
