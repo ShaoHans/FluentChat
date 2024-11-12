@@ -35,7 +35,7 @@
 <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.End" Gap="3rem" class="rz-p-12">
     <RadzenRow>
         <RadzenColumn Size="10" >
-            <RadzenTextBox Style="width:100%" @bind-Value="@msg" />
+            <RadzenTextBox @oninput="HandleInput" @onkeydown="HandleKeyDown" Style="width:100%" @bind-Value="@msg" />
         </RadzenColumn>
         <RadzenColumn Size="2">
             <RadzenButton Icon="send" Click="SendAsync" />
@@ -45,7 +45,7 @@
 
 @code {
     IChatCompletionService chatService = default!;
-    string msg = "";
+    string? msg = "";
     StringBuilder content = new StringBuilder();
     ChatHistory chatHistory = new ChatHistory();
     OpenAIPromptExecutionSettings executionSettings = new OpenAIPromptExecutionSettings
@@ -65,8 +65,26 @@
         return isUser ? "background-color: #daf8e3; text-align: right;" : "background-color: #f1f1f1; text-align: left;";
     }
 
+    void HandleInput(ChangeEventArgs e)
+    {
+        msg = e.Value?.ToString();
+    }
+
+    async Task HandleKeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            await SendAsync();
+        }
+    }
+
     async Task SendAsync()
     {
+        if (string.IsNullOrEmpty(msg))
+        {
+            return;
+        }
+
         chatMessages.Add(new ChatMessageDto { IsAssistant = false, Content = msg });
         var assistant = new ChatMessageDto { IsAssistant = true, Content = "思考中..." };
         chatMessages.Add(assistant);
