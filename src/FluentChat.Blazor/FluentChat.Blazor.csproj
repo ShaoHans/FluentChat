@@ -58,8 +58,4 @@
     <None Include="wwwroot\fonts\SourceSans3VF-Upright.ttf.woff2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
 </Project>

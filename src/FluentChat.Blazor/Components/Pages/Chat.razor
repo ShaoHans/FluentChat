@@ -1,29 +1,38 @@
 ﻿@page "/chat"
 @using System.Collections.Generic
+@using FluentChat.Blazor.Models
 @using Microsoft.SemanticKernel
 @using Microsoft.SemanticKernel.ChatCompletion
 @using Microsoft.SemanticKernel.Connectors.OpenAI
 @using System.Text
 @inject Kernel Kernel
 
-<RadzenStack Orientation="Orientation.Vertical" Gap="3rem" class="rz-p-12">
-    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Right">
-        <RadzenGravatar Email="admin@fluentchat.ai" /><strong>TextAlign.Right</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
-        @((MarkupString)test)
-    </RadzenText>
-    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">
-        <RadzenGravatar Email="info@radzen.com" /><strong>TextAlign.Left</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
-    </RadzenText>
+<RadzenDataList AllowVirtualization="true" Style="height:400px;overflow:auto;"
+                WrapItems="false" AllowPaging="false" 
+                Data="@chatMessages" TItem="ChatMessageDto">
+    <Template Context="message">
+        <RadzenRow Gap="0">
+            @if(message.IsAssistant)
+            {
+                <RadzenColumn>
+                    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Start">
+                        <RadzenGravatar Email="info@radzen.com" /><strong>AI助手</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(message.Content))
+                    </RadzenText>
+                </RadzenColumn>
+            }
+            else
+            {
+                <RadzenColumn Size="10" Offset="2">
+                    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.End">
+                        <RadzenGravatar Email="admin@fluentchat.ai" /><strong>You</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(message.Content))
+                    </RadzenText>
+                </RadzenColumn>
+            }                     
+        </RadzenRow>
+    </Template>
+</RadzenDataList>
 
-    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.End">
-        <RadzenGravatar Email="admin@fluentchat.ai" /><strong>TextAlign.End</strong><br />  Radzen Blazor Components are open source and free for commercial use. You can install them from nuget or build your own copy from source.
-    </RadzenText>
-    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Start">
-        <RadzenGravatar Email="info@radzen.com" /><strong>AI助手</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(content.ToString()))
-    </RadzenText>
-</RadzenStack>
-
-<RadzenStack Orientation="Orientation.Vertical" Gap="3rem" class="rz-p-12">
+<RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.End" Gap="3rem" class="rz-p-12">
     <RadzenRow>
         <RadzenColumn Size="10" >
             <RadzenTextBox Style="width:100%" @bind-Value="@msg" />
@@ -43,6 +52,8 @@
         {
             Temperature = 0.1
         };
+    List<ChatMessageDto> chatMessages = [];
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -56,11 +67,18 @@
 
     async Task SendAsync()
     {
+        chatMessages.Add(new ChatMessageDto { IsAssistant = false, Content = msg });
+        var assistant = new ChatMessageDto { IsAssistant = true, Content = "思考中..." };
+        chatMessages.Add(assistant);
+        StateHasChanged();
         chatHistory.AddUserMessage(msg);
         content.Clear();
+        msg = "";
         await foreach (var message in chatService.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings, Kernel))
         {
             content.Append(message.Content);
+            assistant.Content = content.ToString();
+            StateHasChanged();
         }
 
         chatHistory.AddAssistantMessage(content.ToString());
