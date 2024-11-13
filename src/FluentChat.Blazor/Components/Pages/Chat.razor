@@ -35,7 +35,7 @@
 <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.End" Gap="3rem" class="rz-p-12">
     <RadzenRow>
         <RadzenColumn Size="10" >
-            <RadzenTextBox @oninput="HandleInput" @onkeydown="HandleKeyDown" Style="width:100%" @bind-Value="@msg" />
+            <RadzenTextBox @oninput="HandleInput" @onkeydown="HandleKeyDown" Style="width:100%" Value="@msg" />
         </RadzenColumn>
         <RadzenColumn Size="2">
             <RadzenButton Icon="send" Click="SendAsync" />
@@ -67,13 +67,14 @@
         msg = e.Value?.ToString();
     }
 
-    async Task HandleKeyDown(KeyboardEventArgs args)
+    Task HandleKeyDown(KeyboardEventArgs args)
     {
         Console.WriteLine($"HandleKeyDown-----{args.Key}");
         if (args.Key == "Enter")
         {
-            await SendAsync();
+            return SendAsync();
         }
+        return Task.CompletedTask;
     }
 
     async Task SendAsync()
@@ -83,13 +84,13 @@
             return;
         }
 
-        chatMessages.Add(new ChatMessageDto { IsAssistant = false, Content = msg });
+        var user = new ChatMessageDto { IsAssistant = false, Content = msg };
+        chatMessages.Add(user);
+        msg = null;
         var assistant = new ChatMessageDto { IsAssistant = true, Content = "思考中..." };
         chatMessages.Add(assistant);
-        chatHistory.AddUserMessage(msg);
+        chatHistory.AddUserMessage(user.Content);
         content.Clear();
-        msg = null;
-        StateHasChanged();
         await foreach (var message in chatService.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings, Kernel))
         {
             content.Append(message.Content);
