@@ -6,8 +6,9 @@
 @using Microsoft.SemanticKernel.Connectors.OpenAI
 @using System.Text
 @inject Kernel Kernel
+@inject IJSRuntime JS
 
-<RadzenDataList AllowVirtualization="true" Style="height:400px;overflow:auto;"
+<RadzenDataList id="datalist" AllowVirtualization="true" Style="height:400px;overflow-y:auto;"
                 WrapItems="false" AllowPaging="false" 
                 Data="@chatMessages" TItem="ChatMessageDto">
     <Template Context="message">
@@ -43,6 +44,8 @@
     </RadzenRow>
 </RadzenStack>
 
+<script src="/js/scrollhelper.js"></script>
+
 @code {
     IChatCompletionService chatService = default!;
     string? msg = "";
@@ -58,6 +61,14 @@
     {
         base.OnInitialized();
         chatService = Kernel.GetRequiredService<IChatCompletionService>("Ollama");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            await JS.InvokeVoidAsync("scrollToBottom", "datalist");
+        }
     }
 
     void HandleInput(ChangeEventArgs e)
@@ -96,6 +107,7 @@
             content.Append(message.Content);
             assistant.Content = content.ToString();
             StateHasChanged();
+            await JS.InvokeVoidAsync("scrollToBottom", "dataList");
         }
 
         chatHistory.AddAssistantMessage(content.ToString());
