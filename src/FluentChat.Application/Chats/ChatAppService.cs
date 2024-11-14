@@ -12,7 +12,7 @@ public class ChatAppService(
     IRepository<ChatMessage> chatMessageRepository
 ) : FluentChatAppService, IChatAppService
 {
-    public async Task CreateSessionAsync(CreateSessionDto input)
+    public async Task<ChatSessionDto> CreateSessionAsync(CreateSessionDto input)
     {
         if (
             string.IsNullOrEmpty(input.Title)
@@ -25,6 +25,8 @@ public class ChatAppService(
 
         var chatSession = ObjectMapper.Map(input, new ChatSession());
         await chatSessionRepository.InsertAsync(chatSession);
+
+        return ObjectMapper.Map(chatSession, new ChatSessionDto());
     }
 
     public async Task CreateMessageAsync(CreateMessageDto input)

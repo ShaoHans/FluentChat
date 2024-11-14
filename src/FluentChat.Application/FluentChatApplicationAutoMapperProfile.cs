@@ -31,11 +31,15 @@ public class FluentChatApplicationAutoMapperProfile : Profile
                         src.Model.Substring(0, ChatConsts.ChatSession_Model_MaxLength)
                     )
             );
+
         CreateMap<CreateMessageDto, ChatMessage>()
             .ForMember(
                 dest => dest.Role,
                 opt =>
                     opt.MapFrom(src => src.Role.Substring(0, ChatConsts.ChatMessage_Role_MaxLength))
             );
+
+        CreateMap<ChatMessage, ChatMessageDto>();
+        CreateMap<ChatSession, CreateSessionDto>();
     }
 }
