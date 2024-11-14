@@ -91,10 +91,15 @@ public class FluentChatDbContext
         builder.Entity<ChatSession>(b =>
         {
             b.ToTable("ChatSessions");
-            b.Property(p => p.Service).HasMaxLength(100).IsRequired();
+            b.Property(p => p.Title).HasMaxLength(60).IsRequired();
+            b.Property(p => p.Service).HasMaxLength(60).IsRequired();
             b.Property(p => p.Model).HasMaxLength(100).IsRequired();
 
             b.HasMany(p => p.Messages).WithOne(p => p.Session).HasForeignKey(p => p.SessionId);
+            b.OwnsOne(p => p.PromptSettings, builder =>
+            {
+                builder.ToJson();
+            });
         });
 
         builder.Entity<ChatMessage>(b =>

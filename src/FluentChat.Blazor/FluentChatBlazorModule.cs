@@ -2,7 +2,6 @@
 using System.IO;
 using Abp.RadzenUI;
 using Abp.RadzenUI.Localization;
-
 using FluentChat.Blazor.Components.Pages;
 using FluentChat.Blazor.Menus;
 using FluentChat.EntityFrameworkCore;
@@ -16,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Microsoft.SemanticKernel;
-
 using OpenIddict.Server.AspNetCore;
 using OpenIddict.Validation.AspNetCore;
 using Volo.Abp;
@@ -149,7 +147,6 @@ public class FluentChatBlazorModule : AbpModule
             //    LogoPath = "xxx/xx.png"
             //};
             options.Theme = new ThemeSettings { EnablePremiumTheme = true, };
-
         });
 
         // Configure AbpMultiTenancyOptions, this will affect login page that whether need to switch tenants
