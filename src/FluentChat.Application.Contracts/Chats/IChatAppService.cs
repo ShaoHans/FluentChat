@@ -7,4 +7,6 @@ namespace FluentChat.Chats;
 public interface IChatAppService : IApplicationService
 {
     Task CreateSessionAsync(CreateSessionDto input);
+
+    Task CreateMessageAsync(CreateMessageDto input);
 }

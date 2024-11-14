@@ -1,4 +1,4 @@
-﻿using FluentChat.Models;
+﻿using FluentChat.Chat;
 
 namespace FluentChat.Chats.Dtos;
 

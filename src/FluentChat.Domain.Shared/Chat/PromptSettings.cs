@@ -1,4 +1,4 @@
-﻿namespace FluentChat.Models;
+﻿namespace FluentChat.Chat;
 
 public class PromptSettings
 {

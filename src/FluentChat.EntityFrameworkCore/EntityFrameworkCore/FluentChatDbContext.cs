@@ -1,3 +1,4 @@
+using FluentChat.Chat;
 using FluentChat.Models;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -91,9 +92,9 @@ public class FluentChatDbContext
         builder.Entity<ChatSession>(b =>
         {
             b.ToTable("ChatSessions");
-            b.Property(p => p.Title).HasMaxLength(60).IsRequired();
-            b.Property(p => p.Service).HasMaxLength(60).IsRequired();
-            b.Property(p => p.Model).HasMaxLength(100).IsRequired();
+            b.Property(p => p.Title).HasMaxLength(ChatConsts.ChatSession_Title_MaxLength).IsRequired();
+            b.Property(p => p.Service).HasMaxLength(ChatConsts.ChatSession_Service_MaxLength).IsRequired();
+            b.Property(p => p.Model).HasMaxLength(ChatConsts.ChatSession_Model_MaxLength).IsRequired();
 
             b.HasMany(p => p.Messages).WithOne(p => p.Session).HasForeignKey(p => p.SessionId);
             b.OwnsOne(p => p.PromptSettings, builder =>
@@ -106,7 +107,7 @@ public class FluentChatDbContext
         {
             b.ToTable("ChatMessages");
             b.Property(p => p.SessionId).IsRequired();
-            b.Property(p => p.Role).HasMaxLength(40).IsRequired();
+            b.Property(p => p.Role).HasMaxLength(ChatConsts.ChatMessage_Role_MaxLength).IsRequired();
             b.Property(p => p.Content).IsRequired();
 
             b.HasOne(p => p.Session).WithMany(p => p.Messages).HasForeignKey(p => p.SessionId);
