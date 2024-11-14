@@ -1,12 +1,5 @@
 ﻿@page "/chat"
-@using System.Collections.Generic
 @using FluentChat.Blazor.Models
-@using Microsoft.SemanticKernel
-@using Microsoft.SemanticKernel.ChatCompletion
-@using Microsoft.SemanticKernel.Connectors.OpenAI
-@using System.Text
-@inject Kernel Kernel
-@inject IJSRuntime JS
 
 <RadzenDataList id="datalist" AllowVirtualization="true" Style="height:400px;overflow-y:auto;"
                 WrapItems="false" AllowPaging="false" 
@@ -46,67 +39,4 @@
 
 <script src="/js/scrollhelper.js"></script>
 
-@code {
-    IChatCompletionService chatService = default!;
-    string? msg = "";
-    StringBuilder content = new StringBuilder();
-    ChatHistory chatHistory = new ChatHistory();
-    OpenAIPromptExecutionSettings executionSettings = new OpenAIPromptExecutionSettings
-        {
-            Temperature = 0.1
-        };
-    List<ChatMessageDto> chatMessages = [];
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        chatService = Kernel.GetRequiredService<IChatCompletionService>("Ollama");
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-        {
-            await JS.InvokeVoidAsync("scrollToBottom", "datalist");
-        }
-    }
-
-    void HandleInput(ChangeEventArgs e)
-    {
-        msg = e.Value?.ToString();
-    }
-
-    Task HandleKeyDown(KeyboardEventArgs args)
-    {
-        if (args.Key == "Enter")
-        {
-            return SendAsync();
-        }
-        return Task.CompletedTask;
-    }
-
-    async Task SendAsync()
-    {
-        if (string.IsNullOrEmpty(msg))
-        {
-            return;
-        }
-
-        var user = new ChatMessageDto { IsAssistant = false, Content = msg };
-        chatMessages.Add(user);
-        msg = null;
-        var assistant = new ChatMessageDto { IsAssistant = true, Content = "思考中..." };
-        chatMessages.Add(assistant);
-        chatHistory.AddUserMessage(user.Content);
-        content.Clear();
-        await foreach (var message in chatService.GetStreamingChatMessageContentsAsync(chatHistory, executionSettings, Kernel))
-        {
-            content.Append(message.Content);
-            assistant.Content = content.ToString();
-            StateHasChanged();
-            await JS.InvokeVoidAsync("scrollToBottom", "dataList");
-        }
-
-        chatHistory.AddAssistantMessage(content.ToString());
-    }
-}

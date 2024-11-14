@@ -6,6 +6,7 @@ using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using Volo.Abp.TenantManagement;
+using Volo.Abp.BackgroundJobs;
 
 namespace FluentChat;
 
@@ -17,7 +18,8 @@ namespace FluentChat;
     typeof(AbpIdentityApplicationModule),
     typeof(AbpAccountApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
-    typeof(AbpSettingManagementApplicationModule)
+    typeof(AbpSettingManagementApplicationModule),
+    (typeof(AbpBackgroundJobsModule))
     )]
 public class FluentChatApplicationModule : AbpModule
 {
@@ -26,6 +28,11 @@ public class FluentChatApplicationModule : AbpModule
         Configure<AbpAutoMapperOptions>(options =>
         {
             options.AddMaps<FluentChatApplicationModule>();
+        });
+
+        Configure<AbpBackgroundJobWorkerOptions>(options =>
+        {
+            options.DefaultTimeout = 864000; //10 days (as seconds)
         });
     }
 }
