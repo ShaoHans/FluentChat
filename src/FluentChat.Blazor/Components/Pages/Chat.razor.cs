@@ -10,6 +10,10 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
+using OpenAI.Assistants;
+
+using static Volo.Abp.Identity.Settings.IdentitySettingNames;
+
 namespace FluentChat.Blazor.Components.Pages;
 
 public partial class Chat
@@ -29,6 +33,12 @@ public partial class Chat
     private ChatHistory chatHistory = new();
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
     private List<ChatMessageDto> chatMessages = [];
+    private Task receiveTask;
+
+    //public Chat()
+    //{
+    //    receiveTask = new Task(async () => await ReceiveChatContentAsync());
+    //}
 
     protected override void OnInitialized()
     {
@@ -68,9 +78,35 @@ public partial class Chat
         var user = new ChatMessageDto { IsAssistant = false, Content = question };
         chatMessages.Add(user);
         question = null;
+        //var assistant = new ChatMessageDto { IsAssistant = true, Content = "思考中..." };
+        //chatMessages.Add(assistant);
+        chatHistory.AddUserMessage(user.Content);
+
+        //receiveTask.Start();
+        Task.Factory.StartNew(async () => await ReceiveChatContentAsync());
+
+        //answer.Clear();
+        //await foreach (
+        //    var message in chatService.GetStreamingChatMessageContentsAsync(
+        //        chatHistory,
+        //        executionSettings,
+        //        Kernel
+        //    )
+        //)
+        //{
+        //    answer.Append(message.Content);
+        //    assistant.Content = answer.ToString();
+        //    StateHasChanged();
+        //    await JS.InvokeVoidAsync("scrollToBottom", "dataList");
+        //}
+
+        //chatHistory.AddAssistantMessage(answer.ToString());
+    }
+
+    async Task ReceiveChatContentAsync()
+    {
         var assistant = new ChatMessageDto { IsAssistant = true, Content = "思考中..." };
         chatMessages.Add(assistant);
-        chatHistory.AddUserMessage(user.Content);
         answer.Clear();
         await foreach (
             var message in chatService.GetStreamingChatMessageContentsAsync(
@@ -82,10 +118,8 @@ public partial class Chat
         {
             answer.Append(message.Content);
             assistant.Content = answer.ToString();
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
             await JS.InvokeVoidAsync("scrollToBottom", "dataList");
         }
-
-        chatHistory.AddAssistantMessage(answer.ToString());
     }
 }
