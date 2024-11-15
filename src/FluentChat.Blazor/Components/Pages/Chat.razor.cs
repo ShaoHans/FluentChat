@@ -30,8 +30,6 @@ public partial class Chat
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
     private List<ChatMessageDto> chatMessages = [];
 
-    
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
