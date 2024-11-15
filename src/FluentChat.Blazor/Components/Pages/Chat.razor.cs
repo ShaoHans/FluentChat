@@ -24,8 +24,8 @@ public partial class Chat
     public Guid? SessionId { get; set; }
 
     IChatCompletionService chatService = default!;
-    string? msg = "";
-    private StringBuilder content = new();
+    string? question = "";
+    private StringBuilder answer = new();
     private ChatHistory chatHistory = new();
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
     private List<ChatMessageDto> chatMessages = [];
@@ -46,7 +46,7 @@ public partial class Chat
 
     void HandleInput(ChangeEventArgs e)
     {
-        msg = e.Value?.ToString();
+        question = e.Value?.ToString();
     }
 
     Task HandleKeyDown(KeyboardEventArgs args)
@@ -60,18 +60,18 @@ public partial class Chat
 
     async Task SendAsync()
     {
-        if (string.IsNullOrEmpty(msg))
+        if (string.IsNullOrEmpty(question))
         {
             return;
         }
 
-        var user = new ChatMessageDto { IsAssistant = false, Content = msg };
+        var user = new ChatMessageDto { IsAssistant = false, Content = question };
         chatMessages.Add(user);
-        msg = null;
+        question = null;
         var assistant = new ChatMessageDto { IsAssistant = true, Content = "Ë¼¿¼ÖÐ..." };
         chatMessages.Add(assistant);
         chatHistory.AddUserMessage(user.Content);
-        content.Clear();
+        answer.Clear();
         await foreach (
             var message in chatService.GetStreamingChatMessageContentsAsync(
                 chatHistory,
@@ -80,12 +80,12 @@ public partial class Chat
             )
         )
         {
-            content.Append(message.Content);
-            assistant.Content = content.ToString();
+            answer.Append(message.Content);
+            assistant.Content = answer.ToString();
             StateHasChanged();
             await JS.InvokeVoidAsync("scrollToBottom", "dataList");
         }
 
-        chatHistory.AddAssistantMessage(content.ToString());
+        chatHistory.AddAssistantMessage(answer.ToString());
     }
 }

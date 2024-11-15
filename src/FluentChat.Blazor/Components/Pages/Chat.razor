@@ -29,7 +29,7 @@
 <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.End" Gap="3rem" class="rz-p-12">
     <RadzenRow>
         <RadzenColumn Size="10" >
-            <RadzenTextBox @oninput="HandleInput" @onkeydown="HandleKeyDown" Style="width:100%" Value="@msg" />
+            <RadzenTextBox @oninput="HandleInput" @onkeydown="HandleKeyDown" Style="width:100%" Value="@question" />
         </RadzenColumn>
         <RadzenColumn Size="2">
             <RadzenButton Icon="send" Click="SendAsync" />
