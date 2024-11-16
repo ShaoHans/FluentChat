@@ -5,13 +5,15 @@
 <RadzenCard class="rz-p-0" Style="height:800px">
     <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" Style="height: 100%">
         <RadzenCard class="rz-p-1 rz-background-color-base-900 rz-text-align-center">
+            <RadzenButton Text="新聊天" />
+            <Devider />
             <RadzenListBox FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                            FilterOperator="StringFilterOperator.StartsWith"
                            Data=@chatSessions @bind-Value="@curChatSessionTitle"
                            TextProperty="@nameof(ChatSessionDto.Title)"
                            ValueProperty="@nameof(ChatSessionDto.Id)" AllowClear="true"
                            InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select company" }})"
-                           Style="width: 200px; height: 100%" />
+                           Style="width: 200px; height: 90%" />
         </RadzenCard>
 
         <RadzenCard class="rz-p-1 rz-background-color-base-500 rz-text-align-center" style="height: 100%; width: 100%;">
