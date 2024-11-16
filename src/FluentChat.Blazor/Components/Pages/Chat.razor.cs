@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FluentChat.Blazor.Models;
 using FluentChat.Chats;
+using FluentChat.Chats.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -33,11 +34,20 @@ public partial class Chat
     private ChatHistory chatHistory = new();
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
     private List<ChatMessageDto> chatMessages = [];
+    private IReadOnlyList<ChatSessionDto> chatSessions = [];
+    private string curChatSessionTitle = "";
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         base.OnInitialized();
         chatService = Kernel.GetRequiredService<IChatCompletionService>("Ollama");
+        chatSessions = (
+            await ChatAppService.GetPagedAsync(
+                new GetSessionPagedRequestDto { MaxResultCount = 1000 }
+            )
+        ).Items;
+
+        curChatSessionTitle = chatSessions.FirstOrDefault()?.Title;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -69,7 +79,7 @@ public partial class Chat
             return;
         }
 
-        var user = new ChatMessageDto { IsAssistant = false, Content = question };
+        var user = new ChatMessageDto { Role = AuthorRole.User.Label, Content = question };
         chatMessages.Add(user);
         question = null;
         //var assistant = new ChatMessageDto { IsAssistant = true, Content = "思考中..." };
@@ -99,7 +109,11 @@ public partial class Chat
 
     async Task ReceiveChatContentAsync()
     {
-        var assistant = new ChatMessageDto { IsAssistant = true, Content = "思考中..." };
+        var assistant = new ChatMessageDto
+        {
+            Role = AuthorRole.Assistant.Label,
+            Content = "思考中..."
+        };
         chatMessages.Add(assistant);
         answer.Clear();
         await foreach (

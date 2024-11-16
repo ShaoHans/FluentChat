@@ -1,60 +1,57 @@
 ﻿@page "/chat"
-@using FluentChat.Blazor.Models
+@using FluentChat.Chats.Dtos
 @inherits AbpComponentBase
 
-@* <div class="rz-p-sm-12 rz-text-align-center">
-    <RadzenListBox FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowFiltering="true"
-                   Data=@customers TextProperty="@nameof(Customer.CompanyName)" ValueProperty="@nameof(Customer.CustomerID)" AllowClear="true" @bind-Value=value
-                   InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select company" }})" Style="width: 100%; max-width: 400px; height: 200px" />
-</div> *@
+<RadzenCard class="rz-p-0" Style="height:600px">
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" Style="height: 100%">
+        <RadzenCard class="rz-p-1 rz-background-color-info rz-color-on-info rz-text-align-center">
+            <RadzenListBox FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                           FilterOperator="StringFilterOperator.StartsWith"
+                           Data=@chatSessions @bind-Value="@curChatSessionTitle"
+                           TextProperty="@nameof(ChatSessionDto.Title)"
+                           ValueProperty="@nameof(ChatSessionDto.Id)" AllowClear="true"
+                           InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select company" }})"
+                           Style="width: 200px; height: 100%" />
+        </RadzenCard>
 
-<RadzenDataList id="datalist" AllowVirtualization="true" Style="height:400px;overflow-y:auto;"
-                WrapItems="false" AllowPaging="false" 
-                Data="@chatMessages" TItem="ChatMessageDto">
-    <Template Context="message">
-        <RadzenRow Gap="0">
-            @if(message.IsAssistant)
-            {
-                <RadzenColumn>
-                    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Start">
-                        <RadzenGravatar Email="info@radzen.com" /><strong>AI助手</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(message.Content))
-                    </RadzenText>
-                </RadzenColumn>
-            }
-            else
-            {
-                <RadzenColumn Size="10" Offset="2">
-                    <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.End">
-                        <RadzenGravatar Email="admin@fluentchat.ai" /><strong>You</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(message.Content))
-                    </RadzenText>
-                </RadzenColumn>
-            }                     
-        </RadzenRow>
-    </Template>
-</RadzenDataList>
+        <RadzenCard class="rz-p-1 rz-background-color-success rz-color-on-success rz-text-align-center" style="height: 100%; width: 100%;">
+            <RadzenDataList id="datalist" AllowVirtualization="true" Style="height:80%;overflow-y:auto;"
+                            WrapItems="false" AllowPaging="false"
+                            Data="@chatMessages" TItem="ChatMessageDto">
+                <Template Context="message">
+                    <RadzenRow Gap="0">
+                        @if (message.IsUser())
+                        {
+                            <RadzenColumn Size="10" Offset="2">
+                                <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.End">
+                                    <RadzenGravatar Email="admin@fluentchat.ai" /><strong>You</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(message.Content))
+                                </RadzenText>
+                            </RadzenColumn>
+                        }
+                        else
+                        {
+                            <RadzenColumn>
+                                <RadzenText TextStyle="TextStyle.Body1" TextAlign="TextAlign.Start">
+                                    <RadzenGravatar Email="info@radzen.com" /><strong>AI助手</strong><br />  @((MarkupString)Markdig.Markdown.ToHtml(message.Content))
+                                </RadzenText>
+                            </RadzenColumn>
+                        }
+                    </RadzenRow>
+                </Template>
+            </RadzenDataList>
 
-<RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.End" Gap="3rem" class="rz-p-12">
-    <RadzenRow>
-        <RadzenColumn Size="10" >
-            <RadzenTextBox @oninput="HandleInput" @onkeydown="HandleKeyDown" Style="width:100%" Value="@question" />
-        </RadzenColumn>
-        <RadzenColumn Size="2">
-            <RadzenButton Icon="send" Click="SendAsync" />
-        </RadzenColumn>
-    </RadzenRow>
-</RadzenStack>
+            <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.End" Gap="3rem" class="rz-p-12">
+                <RadzenRow>
+                    <RadzenColumn Size="10">
+                        <RadzenTextBox @oninput="HandleInput" @onkeydown="HandleKeyDown" Style="width:100%" Value="@question" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="2">
+                        <RadzenButton Icon="send" Click="SendAsync" />
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenStack>
+</RadzenCard>
 
 <script src="/js/scrollhelper.js"></script>
-
-@* @code {
-    IEnumerable<Customer> customers;
-    string value;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        customers = dbContext.Customers;
-    }
-} *@
-

@@ -9,7 +9,7 @@ public class FluentChatApplicationAutoMapperProfile : Profile
 {
     public FluentChatApplicationAutoMapperProfile()
     {
-        CreateMap<CreateSessionDto, ChatSession>()
+        CreateMap<SaveSessionDto, ChatSession>()
             .ForMember(
                 dest => dest.Title,
                 opt =>
@@ -40,6 +40,5 @@ public class FluentChatApplicationAutoMapperProfile : Profile
             );
 
         CreateMap<ChatMessage, ChatMessageDto>();
-        CreateMap<ChatSession, CreateSessionDto>();
     }
 }
