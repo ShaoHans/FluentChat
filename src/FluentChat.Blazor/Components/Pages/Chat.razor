@@ -2,9 +2,9 @@
 @using FluentChat.Chats.Dtos
 @inherits AbpComponentBase
 
-<RadzenCard class="rz-p-0" Style="height:600px">
+<RadzenCard class="rz-p-0" Style="height:800px">
     <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" Style="height: 100%">
-        <RadzenCard class="rz-p-1 rz-background-color-info rz-color-on-info rz-text-align-center">
+        <RadzenCard class="rz-p-1 rz-background-color-base-900 rz-text-align-center">
             <RadzenListBox FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                            FilterOperator="StringFilterOperator.StartsWith"
                            Data=@chatSessions @bind-Value="@curChatSessionTitle"
@@ -14,7 +14,7 @@
                            Style="width: 200px; height: 100%" />
         </RadzenCard>
 
-        <RadzenCard class="rz-p-1 rz-background-color-success rz-color-on-success rz-text-align-center" style="height: 100%; width: 100%;">
+        <RadzenCard class="rz-p-1 rz-background-color-base-500 rz-text-align-center" style="height: 100%; width: 100%;">
             <RadzenDataList id="datalist" AllowVirtualization="true" Style="height:80%;overflow-y:auto;"
                             WrapItems="false" AllowPaging="false"
                             Data="@chatMessages" TItem="ChatMessageDto">
