@@ -1,9 +1,13 @@
 ﻿using FluentChat.Chat;
 
+using System;
+
 namespace FluentChat.Chats.Dtos;
 
-public class CreateSessionDto
+public class SaveSessionDto
 {
+    public Guid Id { get; set; }
+
     public string Title { get; set; } = default!;
 
     public string Service { get; set; } = string.Empty;

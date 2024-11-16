@@ -19,4 +19,9 @@ public class ChatSession : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public PromptSettings PromptSettings { get; set; } = new();
 
     public List<ChatMessage> Messages { get; set; } = [];
+
+    public ChatSession() { }
+
+    public ChatSession(Guid id)
+        : base(id) { }
 }

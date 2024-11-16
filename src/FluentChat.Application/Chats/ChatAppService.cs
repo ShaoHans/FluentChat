@@ -8,23 +8,33 @@ using Volo.Abp.Domain.Repositories;
 namespace FluentChat.Chats;
 
 public class ChatAppService(
-    IRepository<ChatSession> chatSessionRepository,
-    IRepository<ChatMessage> chatMessageRepository
+    IRepository<ChatSession, Guid> chatSessionRepository,
+    IRepository<ChatMessage, Guid> chatMessageRepository
 ) : FluentChatAppService, IChatAppService
 {
-    public async Task<ChatSessionDto> CreateSessionAsync(CreateSessionDto input)
+    public async Task<ChatSessionDto> SaveSessionAsync(SaveSessionDto input)
     {
         if (
             string.IsNullOrEmpty(input.Title)
             || string.IsNullOrEmpty(input.Model)
             || input.PromptSettings is null
+            || input.Id == Guid.Empty
         )
         {
             throw new UserFriendlyException(L[FluentChatDomainErrorCodes.RequestParamterInvalid]);
         }
 
-        var chatSession = ObjectMapper.Map(input, new ChatSession());
-        await chatSessionRepository.InsertAsync(chatSession);
+        var chatSession = await chatSessionRepository.FindAsync(input.Id);
+        if (chatSession == null)
+        {
+            chatSession = ObjectMapper.Map(input, new ChatSession(input.Id));
+            await chatSessionRepository.InsertAsync(chatSession);
+        }
+        else
+        {
+            ObjectMapper.Map(input, chatSession);
+            await chatSessionRepository.UpdateAsync(chatSession);
+        }
 
         return ObjectMapper.Map(chatSession, new ChatSessionDto());
     }

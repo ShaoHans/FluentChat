@@ -10,10 +10,6 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
-using OpenAI.Assistants;
-
-using static Volo.Abp.Identity.Settings.IdentitySettingNames;
-
 namespace FluentChat.Blazor.Components.Pages;
 
 public partial class Chat
@@ -33,12 +29,6 @@ public partial class Chat
     private ChatHistory chatHistory = new();
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
     private List<ChatMessageDto> chatMessages = [];
-    private Task receiveTask;
-
-    //public Chat()
-    //{
-    //    receiveTask = new Task(async () => await ReceiveChatContentAsync());
-    //}
 
     protected override void OnInitialized()
     {
