@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using FluentChat.Blazor.Models;
+using FluentChat.Chats;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -19,6 +20,9 @@ public partial class Chat
 
     [Inject]
     public IJSRuntime JS { get; set; } = default!;
+
+    [Inject]
+    public IChatAppService ChatAppService { get; set; } = default!;
 
     [SupplyParameterFromQuery]
     public Guid? SessionId { get; set; }

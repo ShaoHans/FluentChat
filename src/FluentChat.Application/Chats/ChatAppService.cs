@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentChat.Chats.Dtos;
 using FluentChat.Models;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 
 namespace FluentChat.Chats;
@@ -52,5 +56,19 @@ public class ChatAppService(
 
         var chatMessage = ObjectMapper.Map(input, new ChatMessage());
         await chatMessageRepository.InsertAsync(chatMessage);
+    }
+
+    public async Task<PagedResultDto<ChatSessionDto>> GetPagedAsync(GetSessionPagedRequestDto input)
+    {
+        var query = (await chatSessionRepository.GetQueryableAsync())
+            .Where(x => x.CreatorId == CurrentUser.Id)
+            .AsNoTracking();
+
+        var count = await query.CountAsync();
+        var list = await query.OrderByDescending(c => c.CreationTime).PageBy(input).ToListAsync();
+        return new PagedResultDto<ChatSessionDto>(
+            count,
+            ObjectMapper.Map<List<ChatSession>, IReadOnlyList<ChatSessionDto>>(list)
+        );
     }
 }

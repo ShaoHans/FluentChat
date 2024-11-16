@@ -2,6 +2,12 @@
 @using FluentChat.Blazor.Models
 @inherits AbpComponentBase
 
+@* <div class="rz-p-sm-12 rz-text-align-center">
+    <RadzenListBox FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.StartsWith" AllowFiltering="true"
+                   Data=@customers TextProperty="@nameof(Customer.CompanyName)" ValueProperty="@nameof(Customer.CustomerID)" AllowClear="true" @bind-Value=value
+                   InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select company" }})" Style="width: 100%; max-width: 400px; height: 200px" />
+</div> *@
+
 <RadzenDataList id="datalist" AllowVirtualization="true" Style="height:400px;overflow-y:auto;"
                 WrapItems="false" AllowPaging="false" 
                 Data="@chatMessages" TItem="ChatMessageDto">
@@ -40,4 +46,15 @@
 
 <script src="/js/scrollhelper.js"></script>
 
+@* @code {
+    IEnumerable<Customer> customers;
+    string value;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        customers = dbContext.Customers;
+    }
+} *@
 
