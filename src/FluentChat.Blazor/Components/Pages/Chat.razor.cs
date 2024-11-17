@@ -149,6 +149,8 @@ public partial class Chat
         };
         _chatSession.Messages.Add(assistant);
         answer.Clear();
+        await InvokeAsync(StateHasChanged);
+
         await foreach (
             var message in chatService.GetStreamingChatMessageContentsAsync(
                 chatHistory,
