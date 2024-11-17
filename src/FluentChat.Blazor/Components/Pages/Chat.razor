@@ -1,11 +1,11 @@
-﻿@page "/chat"
+﻿@page "/chat/{SessionId:Guid?}"
 @using FluentChat.Chats.Dtos
 @inherits AbpComponentBase
 
 <RadzenCard class="rz-p-0" Style="height:800px">
     <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" Style="height: 100%">
         <RadzenCard class="rz-p-1 rz-background-color-base-900 rz-text-align-center">
-            <RadzenButton Text="新聊天" />
+            <RadzenButton Click="NewChatSession" Text="新聊天" />
             <Devider />
             <RadzenListBox FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                            FilterOperator="StringFilterOperator.StartsWith"

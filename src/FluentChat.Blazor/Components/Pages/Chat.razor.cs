@@ -23,9 +23,12 @@ public partial class Chat
     public IJSRuntime JS { get; set; } = default!;
 
     [Inject]
+    public NavigationManager Navigation { get; set; } = default!;
+
+    [Inject]
     public IChatAppService ChatAppService { get; set; } = default!;
 
-    [SupplyParameterFromQuery]
+    [Parameter]
     public Guid? SessionId { get; set; }
 
     IChatCompletionService chatService = default!;
@@ -56,6 +59,17 @@ public partial class Chat
         {
             await JS.InvokeVoidAsync("scrollToBottom", "datalist");
         }
+    }
+
+    void NewChatSession()
+    {
+        //SessionId = Guid.NewGuid();
+        Navigation.NavigateTo($"/chat/{Guid.NewGuid()}", false);
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
     }
 
     void HandleInput(ChangeEventArgs e)
