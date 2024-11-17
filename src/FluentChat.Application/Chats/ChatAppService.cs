@@ -71,4 +71,16 @@ public class ChatAppService(
             ObjectMapper.Map<List<ChatSession>, IReadOnlyList<ChatSessionDto>>(list)
         );
     }
+
+    public async Task<ChatSessionDto?> GetChatSessionAsync(Guid id)
+    {
+        var chatSession = await (await chatSessionRepository.WithDetailsAsync(x => x.Messages))
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+        if (chatSession is null)
+        {
+            return null;
+        }
+        return ObjectMapper.Map<ChatSession, ChatSessionDto>(chatSession);
+    }
 }

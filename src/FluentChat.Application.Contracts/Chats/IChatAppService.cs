@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentChat.Chats.Dtos;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -12,4 +13,6 @@ public interface IChatAppService : IApplicationService
     Task CreateMessageAsync(CreateMessageDto input);
 
     Task<PagedResultDto<ChatSessionDto>> GetPagedAsync(GetSessionPagedRequestDto input);
+
+    Task<ChatSessionDto?> GetChatSessionAsync(Guid id);
 }
