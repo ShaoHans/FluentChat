@@ -10,6 +10,8 @@ public interface IChatAppService : IApplicationService
 {
     Task<ChatSessionDto> SaveSessionAsync(SaveSessionDto input);
 
+    Task UpdateChatSessionTitleAsync(Guid id, string title);
+
     Task CreateMessageAsync(CreateMessageDto input);
 
     Task<PagedResultDto<ChatSessionDto>> GetPagedAsync(GetSessionPagedRequestDto input);

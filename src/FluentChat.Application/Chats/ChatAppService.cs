@@ -43,6 +43,18 @@ public class ChatAppService(
         return ObjectMapper.Map(chatSession, new ChatSessionDto());
     }
 
+    public async Task UpdateChatSessionTitleAsync(Guid id, string title)
+    {
+        var chatSession = await chatSessionRepository.FindAsync(id);
+        if (chatSession is null)
+        {
+            throw new UserFriendlyException(L[FluentChatDomainErrorCodes.DataNotExist]);
+        }
+
+        chatSession.Title = title;
+        await chatSessionRepository.UpdateAsync(chatSession);
+    }
+
     public async Task CreateMessageAsync(CreateMessageDto input)
     {
         if (

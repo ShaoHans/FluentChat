@@ -125,10 +125,23 @@ public partial class Chat
             return;
         }
 
+        if (_chatSession.Messages.IsNullOrEmpty())
+        {
+            await ChatAppService.UpdateChatSessionTitleAsync(_chatSession.Id, question);
+            var session = chatSessions.FirstOrDefault(c => c.Id == _chatSession.Id);
+            if (session is not null)
+            {
+                session.Title = question;
+                StateHasChanged();
+            }
+        }
+
         var user = new ChatMessageDto { Role = AuthorRole.User.Label, Content = question };
         _chatSession.Messages.Add(user);
-        question = null;
         chatHistory.AddUserMessage(user.Content);
+
+        question = null;
+
         await ChatAppService.CreateMessageAsync(
             new CreateMessageDto
             {

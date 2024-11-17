@@ -4,6 +4,8 @@
     "AppName": "FluentChat",
     "Menu:Home": "Home",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information visit",
-    "Welcome": "Welcome"
+    "Welcome": "Welcome",
+    "Common:00001": "invalid request paramter",
+    "Common:00002": "data not exist"
   }
 }
