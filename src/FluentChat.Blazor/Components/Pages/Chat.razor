@@ -9,7 +9,7 @@
             <Devider />
             <RadzenListBox FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                            FilterOperator="StringFilterOperator.StartsWith"
-                           Data=@chatSessions @bind-Value="@curChatSessionTitle"
+                           Data=@chatSessions @bind-Value="@_chatSession.Id"
                            TextProperty="@nameof(ChatSessionDto.Title)"
                            ValueProperty="@nameof(ChatSessionDto.Id)" AllowClear="true"
                            InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select company" }})"
@@ -19,7 +19,7 @@
         <RadzenCard class="rz-p-1 rz-background-color-base-500 rz-text-align-center" style="height: 100%; width: 100%;">
             <RadzenDataList id="datalist" AllowVirtualization="true" Style="height:80%;overflow-y:auto;"
                             WrapItems="false" AllowPaging="false"
-                            Data="@chatMessages" TItem="ChatMessageDto">
+                            Data="@_chatSession.Messages" TItem="ChatMessageDto">
                 <Template Context="message">
                     <RadzenRow Gap="0">
                         @if (message.IsUser())

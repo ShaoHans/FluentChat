@@ -1,6 +1,5 @@
-﻿using FluentChat.Chat;
-
-using System;
+﻿using System;
+using FluentChat.Chat;
 
 namespace FluentChat.Chats.Dtos;
 

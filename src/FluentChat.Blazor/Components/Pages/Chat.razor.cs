@@ -5,12 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentChat.Chats;
 using FluentChat.Chats.Dtos;
+using FluentChat.Models;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+
+using OpenAI.Assistants;
 
 namespace FluentChat.Blazor.Components.Pages;
 
@@ -36,10 +40,10 @@ public partial class Chat
     private StringBuilder answer = new();
     private ChatHistory chatHistory = new();
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
-    private List<ChatMessageDto> chatMessages = [];
+    //private List<ChatMessageDto> chatMessages = [];
     private IReadOnlyList<ChatSessionDto> chatSessions = [];
-    private string curChatSessionTitle = "";
     private Guid? _sessionId;
+    private ChatSessionDto _chatSession = new();
 
     protected override async void OnInitialized()
     {
@@ -51,7 +55,7 @@ public partial class Chat
             )
         ).Items;
 
-        curChatSessionTitle = chatSessions.FirstOrDefault()?.Title;
+        _chatSession = chatSessions.FirstOrDefault() ?? new();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -67,18 +71,29 @@ public partial class Chat
         Navigation.NavigateTo($"/chat/{Guid.NewGuid()}", false);
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         base.OnParametersSet();
 
         if (Guid.TryParse(Id, out Guid sessionId))
         {
             _sessionId = sessionId;
+            _chatSession = await ChatAppService.SaveSessionAsync(new SaveSessionDto
+            {
+                Id = sessionId,
+                Model = "llama3.2",
+                Service = "ollama",
+                Title = "新聊天",
+                PromptSettings = new FluentChat.Chat.PromptSettings
+                {
+                    Temperature = executionSettings.Temperature
+                }
+            });
         }
-        else
-        {
-            Navigation.NavigateTo("/chat", false);
-        }
+        //else
+        //{
+        //    Navigation.NavigateTo("/chat", false);
+        //}
     }
 
     void HandleInput(ChangeEventArgs e)
@@ -103,31 +118,16 @@ public partial class Chat
         }
 
         var user = new ChatMessageDto { Role = AuthorRole.User.Label, Content = question };
-        chatMessages.Add(user);
+        _chatSession.Messages.Add(user);
         question = null;
-        //var assistant = new ChatMessageDto { IsAssistant = true, Content = "思考中..." };
-        //chatMessages.Add(assistant);
         chatHistory.AddUserMessage(user.Content);
-
-        //receiveTask.Start();
+        await ChatAppService.CreateMessageAsync(new CreateMessageDto
+        {
+            SessionId = _chatSession.Id,
+            Role = user.Role,
+            Content = user.Content
+        });
         Task.Factory.StartNew(async () => await ReceiveChatContentAsync());
-
-        //answer.Clear();
-        //await foreach (
-        //    var message in chatService.GetStreamingChatMessageContentsAsync(
-        //        chatHistory,
-        //        executionSettings,
-        //        Kernel
-        //    )
-        //)
-        //{
-        //    answer.Append(message.Content);
-        //    assistant.Content = answer.ToString();
-        //    StateHasChanged();
-        //    await JS.InvokeVoidAsync("scrollToBottom", "dataList");
-        //}
-
-        //chatHistory.AddAssistantMessage(answer.ToString());
     }
 
     async Task ReceiveChatContentAsync()
@@ -137,7 +137,7 @@ public partial class Chat
             Role = AuthorRole.Assistant.Label,
             Content = "思考中..."
         };
-        chatMessages.Add(assistant);
+        _chatSession.Messages.Add(assistant);
         answer.Clear();
         await foreach (
             var message in chatService.GetStreamingChatMessageContentsAsync(
@@ -152,5 +152,13 @@ public partial class Chat
             await InvokeAsync(StateHasChanged);
             await JS.InvokeVoidAsync("scrollToBottom", "dataList");
         }
+
+        chatHistory.AddAssistantMessage(assistant.Content);
+        await ChatAppService.CreateMessageAsync(new CreateMessageDto
+        {
+            SessionId = _chatSession.Id,
+            Role = assistant.Role,
+            Content = assistant.Content
+        });
     }
 }
