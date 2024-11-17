@@ -53,7 +53,7 @@ public partial class Chat
 
         if (chatSessions.Count > 0 && string.IsNullOrEmpty(Id))
         {
-            await SwitchChatSessionAsync(chatSessions.First().Id);
+            ChangeUrl(chatSessions.First().Id);
         }
     }
 
@@ -65,22 +65,14 @@ public partial class Chat
         }
     }
 
-    async Task SwitchChatSessionAsync(Guid sessionId)
+    void ChangeUrl(Guid sessionId)
     {
-        var session = await ChatAppService.GetChatSessionAsync(sessionId);
-        if (session is null)
-        {
-            await Message.Error("聊天会话不存在");
-            Navigation.NavigateTo("/chat", false);
-            return;
-        }
-
-        _chatSession = session;
+        Navigation.NavigateTo($"/chat/{sessionId}", false);
     }
 
     void NewChatSession()
     {
-        Navigation.NavigateTo($"/chat/{Guid.NewGuid()}", false);
+        ChangeUrl(Guid.NewGuid());
     }
 
     protected override async Task OnParametersSetAsync()
@@ -89,20 +81,27 @@ public partial class Chat
 
         if (Guid.TryParse(Id, out Guid sessionId))
         {
-            _sessionId = sessionId;
-            _chatSession = await ChatAppService.SaveSessionAsync(
-                new SaveSessionDto
-                {
-                    Id = sessionId,
-                    Model = "llama3.2",
-                    Service = "ollama",
-                    Title = "新聊天",
-                    PromptSettings = new FluentChat.Chat.PromptSettings
+            var session = await ChatAppService.GetChatSessionAsync(sessionId);
+            if (session is null)
+            {
+                _chatSession = await ChatAppService.SaveSessionAsync(
+                    new SaveSessionDto
                     {
-                        Temperature = executionSettings.Temperature
+                        Id = sessionId,
+                        Model = "llama3.2",
+                        Service = "ollama",
+                        Title = "新聊天",
+                        PromptSettings = new FluentChat.Chat.PromptSettings
+                        {
+                            Temperature = executionSettings.Temperature
+                        }
                     }
-                }
-            );
+                );
+            }
+            else
+            {
+                _chatSession = session;
+            }
         }
     }
 
