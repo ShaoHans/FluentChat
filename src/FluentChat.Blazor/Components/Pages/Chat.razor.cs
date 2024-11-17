@@ -101,6 +101,17 @@ public partial class Chat
             {
                 _chatSession = session;
             }
+
+            foreach (var message in _chatSession.Messages)
+            {
+                chatHistory.Add(
+                    new ChatMessageContent(
+                        new AuthorRole(message.Role),
+                        message.Content,
+                        _chatSession.Model
+                    )
+                );
+            }
         }
     }
 
