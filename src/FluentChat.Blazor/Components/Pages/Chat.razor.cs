@@ -37,7 +37,6 @@ public partial class Chat
     private ChatHistory chatHistory = new();
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
     private IReadOnlyList<ChatSessionDto> chatSessions = [];
-    private Guid? _sessionId;
     private ChatSessionDto _chatSession = new();
 
     protected override async Task OnInitializedAsync()
@@ -138,7 +137,7 @@ public partial class Chat
                 Content = user.Content
             }
         );
-        Task.Factory.StartNew(async () => await ReceiveChatContentAsync());
+        _ = Task.Factory.StartNew(async () => await ReceiveChatContentAsync());
     }
 
     async Task ReceiveChatContentAsync()
