@@ -29,7 +29,7 @@ public partial class Chat
     public IChatAppService ChatAppService { get; set; } = default!;
 
     [Parameter]
-    public Guid? SessionId { get; set; }
+    public string? Id { get; set; }
 
     IChatCompletionService chatService = default!;
     string? question = "";
@@ -39,6 +39,7 @@ public partial class Chat
     private List<ChatMessageDto> chatMessages = [];
     private IReadOnlyList<ChatSessionDto> chatSessions = [];
     private string curChatSessionTitle = "";
+    private Guid? _sessionId;
 
     protected override async void OnInitialized()
     {
@@ -63,13 +64,21 @@ public partial class Chat
 
     void NewChatSession()
     {
-        //SessionId = Guid.NewGuid();
         Navigation.NavigateTo($"/chat/{Guid.NewGuid()}", false);
     }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+
+        if (Guid.TryParse(Id, out Guid sessionId))
+        {
+            _sessionId = sessionId;
+        }
+        else
+        {
+            Navigation.NavigateTo("/chat", false);
+        }
     }
 
     void HandleInput(ChangeEventArgs e)
