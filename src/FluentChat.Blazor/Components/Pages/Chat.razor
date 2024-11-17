@@ -10,11 +10,14 @@
             <RadzenListBox FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                            FilterOperator="StringFilterOperator.StartsWith"
                            Data=@chatSessions @bind-Value="@_chatSession.Id"
-                           TextProperty="@nameof(ChatSessionDto.Title)"
                            ValueProperty="@nameof(ChatSessionDto.Id)" AllowClear="true"
                            InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select company" }})"
                            Change="(args)=>ChangeUrl((Guid)args)"
-                           Style="width: 200px; height: 90%" />
+                           Style="width: 200px; height: 90%">
+                <Template>
+                    <RadzenLabel Text="@context.Title" Style="width:100%" />
+                </Template>
+            </RadzenListBox>
         </RadzenCard>
 
         <RadzenCard class="rz-p-1 rz-background-color-base-500 rz-text-align-center" style="height: 100%; width: 100%;">
