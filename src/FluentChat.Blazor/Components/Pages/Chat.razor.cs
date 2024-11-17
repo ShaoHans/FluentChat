@@ -5,16 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentChat.Chats;
 using FluentChat.Chats.Dtos;
-using FluentChat.Models;
-
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
-
-using OpenAI.Assistants;
 
 namespace FluentChat.Blazor.Components.Pages;
 
@@ -40,7 +36,6 @@ public partial class Chat
     private StringBuilder answer = new();
     private ChatHistory chatHistory = new();
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
-    //private List<ChatMessageDto> chatMessages = [];
     private IReadOnlyList<ChatSessionDto> chatSessions = [];
     private Guid? _sessionId;
     private ChatSessionDto _chatSession = new();
@@ -78,22 +73,20 @@ public partial class Chat
         if (Guid.TryParse(Id, out Guid sessionId))
         {
             _sessionId = sessionId;
-            _chatSession = await ChatAppService.SaveSessionAsync(new SaveSessionDto
-            {
-                Id = sessionId,
-                Model = "llama3.2",
-                Service = "ollama",
-                Title = "新聊天",
-                PromptSettings = new FluentChat.Chat.PromptSettings
+            _chatSession = await ChatAppService.SaveSessionAsync(
+                new SaveSessionDto
                 {
-                    Temperature = executionSettings.Temperature
+                    Id = sessionId,
+                    Model = "llama3.2",
+                    Service = "ollama",
+                    Title = "新聊天",
+                    PromptSettings = new FluentChat.Chat.PromptSettings
+                    {
+                        Temperature = executionSettings.Temperature
+                    }
                 }
-            });
+            );
         }
-        //else
-        //{
-        //    Navigation.NavigateTo("/chat", false);
-        //}
     }
 
     void HandleInput(ChangeEventArgs e)
@@ -121,12 +114,14 @@ public partial class Chat
         _chatSession.Messages.Add(user);
         question = null;
         chatHistory.AddUserMessage(user.Content);
-        await ChatAppService.CreateMessageAsync(new CreateMessageDto
-        {
-            SessionId = _chatSession.Id,
-            Role = user.Role,
-            Content = user.Content
-        });
+        await ChatAppService.CreateMessageAsync(
+            new CreateMessageDto
+            {
+                SessionId = _chatSession.Id,
+                Role = user.Role,
+                Content = user.Content
+            }
+        );
         Task.Factory.StartNew(async () => await ReceiveChatContentAsync());
     }
 
@@ -154,11 +149,13 @@ public partial class Chat
         }
 
         chatHistory.AddAssistantMessage(assistant.Content);
-        await ChatAppService.CreateMessageAsync(new CreateMessageDto
-        {
-            SessionId = _chatSession.Id,
-            Role = assistant.Role,
-            Content = assistant.Content
-        });
+        await ChatAppService.CreateMessageAsync(
+            new CreateMessageDto
+            {
+                SessionId = _chatSession.Id,
+                Role = assistant.Role,
+                Content = assistant.Content
+            }
+        );
     }
 }
