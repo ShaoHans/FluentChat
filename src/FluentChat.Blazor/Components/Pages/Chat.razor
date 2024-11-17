@@ -13,6 +13,7 @@
                            TextProperty="@nameof(ChatSessionDto.Title)"
                            ValueProperty="@nameof(ChatSessionDto.Id)" AllowClear="true"
                            InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select company" }})"
+                           Change="(args)=>SwitchChatSessionAsync((Guid)args)"
                            Style="width: 200px; height: 90%" />
         </RadzenCard>
 

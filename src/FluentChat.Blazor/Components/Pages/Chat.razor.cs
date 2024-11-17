@@ -40,9 +40,10 @@ public partial class Chat
     private Guid? _sessionId;
     private ChatSessionDto _chatSession = new();
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
+
         chatService = Kernel.GetRequiredService<IChatCompletionService>("Ollama");
         chatSessions = (
             await ChatAppService.GetPagedAsync(
@@ -50,7 +51,10 @@ public partial class Chat
             )
         ).Items;
 
-        _chatSession = chatSessions.FirstOrDefault() ?? new();
+        if (chatSessions.Count > 0 && string.IsNullOrEmpty(Id))
+        {
+            await SwitchChatSessionAsync(chatSessions.First().Id);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -59,6 +63,19 @@ public partial class Chat
         {
             await JS.InvokeVoidAsync("scrollToBottom", "datalist");
         }
+    }
+
+    async Task SwitchChatSessionAsync(Guid sessionId)
+    {
+        var session = await ChatAppService.GetChatSessionAsync(sessionId);
+        if (session is null)
+        {
+            await Message.Error("聊天会话不存在");
+            Navigation.NavigateTo("/chat", false);
+            return;
+        }
+
+        _chatSession = session;
     }
 
     void NewChatSession()
