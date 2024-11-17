@@ -36,7 +36,7 @@ public partial class Chat
     private StringBuilder answer = new();
     private ChatHistory chatHistory = new();
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
-    private IReadOnlyList<ChatSessionDto> chatSessions = [];
+    private List<ChatSessionDto> chatSessions = [];
     private ChatSessionDto _chatSession = new();
 
     protected override async Task OnInitializedAsync()
@@ -48,7 +48,7 @@ public partial class Chat
             await ChatAppService.GetPagedAsync(
                 new GetSessionPagedRequestDto { MaxResultCount = 1000 }
             )
-        ).Items;
+        ).Items.ToList();
 
         if (chatSessions.Count > 0 && string.IsNullOrEmpty(Id))
         {
@@ -96,6 +96,7 @@ public partial class Chat
                         }
                     }
                 );
+                chatSessions.Insert(0, _chatSession);
             }
             else
             {
