@@ -52,7 +52,8 @@
                         <RadzenTextBox @oninput="HandleInput" @onkeydown="HandleKeyDown" Style="width:100%" Value="@question" />
                     </RadzenColumn>
                     <RadzenColumn Size="2">
-                        <RadzenButton Icon="send" Click="SendAsync" />
+                        <RadzenButton Icon="send" title="发送" Click="SendAsync" Visible="@_visible" />
+                        <RadzenButton Icon="stop_circle" title="停止" Click="StopAsync" Visible="@(!_visible)" />
                     </RadzenColumn>
                 </RadzenRow>
             </RadzenStack>
@@ -61,3 +62,4 @@
 </RadzenCard>
 
 <script src="/js/scrollhelper.js"></script>
+
