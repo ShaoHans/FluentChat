@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentChat.DbMigrator", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentChat.Blazor", "src\FluentChat.Blazor\FluentChat.Blazor.csproj", "{B260FF0D-EA6D-4853-9967-DD7C999D6A5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentChat.AI", "src\FluentChat.AI\FluentChat.AI.csproj", "{F7FDB597-0D41-4DB6-84E7-D4635B6CB6A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{B260FF0D-EA6D-4853-9967-DD7C999D6A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B260FF0D-EA6D-4853-9967-DD7C999D6A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B260FF0D-EA6D-4853-9967-DD7C999D6A5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7FDB597-0D41-4DB6-84E7-D4635B6CB6A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7FDB597-0D41-4DB6-84E7-D4635B6CB6A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7FDB597-0D41-4DB6-84E7-D4635B6CB6A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7FDB597-0D41-4DB6-84E7-D4635B6CB6A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{EF480016-9127-4916-8735-D2466BDBC582} = {04DBDB01-70F4-4E06-B468-8F87850B22BE}
 		{70680696-BB1E-4383-BCB2-42C3767171FB} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 		{B260FF0D-EA6D-4853-9967-DD7C999D6A5D} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
+		{F7FDB597-0D41-4DB6-84E7-D4635B6CB6A9} = {CA9AC87F-097E-4F15-8393-4BC07735A5B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {28315BFD-90E7-4E14-A2EA-F3D23AF4126F}
