@@ -4,7 +4,7 @@
 
 <RadzenCard class="rz-p-0" Style="height:800px">
     <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" Style="height: 100%">
-        <RadzenCard class="rz-p-1 rz-background-color-base-900 rz-text-align-center">
+        <RadzenCard class="rz-p-1 rz-text-align-center">
             <RadzenButton Click="NewChatSession" Text="新聊天" />
             <Devider />
             <RadzenListBox FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -20,7 +20,7 @@
             </RadzenListBox>
         </RadzenCard>
 
-        <RadzenCard class="rz-p-1 rz-background-color-base-500 rz-text-align-center" style="height: 100%; width: 100%;">
+        <RadzenCard class="rz-p-1 rz-text-align-center" style="height: 100%; width: 100%;">
             <RadzenDataList id="datalist" AllowVirtualization="true" Style="height:80%;overflow-y:auto;"
                             WrapItems="false" AllowPaging="false"
                             Data="@_chatSession.Messages" TItem="ChatMessageDto">
@@ -52,7 +52,8 @@
                         <RadzenTextBox @oninput="HandleInput" @onkeydown="HandleKeyDown" Style="width:100%" Value="@question" />
                     </RadzenColumn>
                     <RadzenColumn Size="2">
-                        <RadzenButton Icon="send" Click="SendAsync" />
+                        <RadzenButton Icon="send" title="发送" Click="SendAsync" Visible="@_visible" />
+                        <RadzenButton Icon="stop_circle" title="停止" Click="StopAsync" Visible="@(!_visible)" ButtonStyle="ButtonStyle.Danger" />
                     </RadzenColumn>
                 </RadzenRow>
             </RadzenStack>
@@ -61,3 +62,4 @@
 </RadzenCard>
 
 <script src="/js/scrollhelper.js"></script>
+

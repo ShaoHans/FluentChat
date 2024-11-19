@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentChat.Chats;
 using FluentChat.Chats.Dtos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -38,6 +40,8 @@ public partial class Chat
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
     private List<ChatSessionDto> chatSessions = [];
     private ChatSessionDto _chatSession = new();
+    private CancellationTokenSource _cts = new();
+    private bool _visible = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,8 +96,8 @@ public partial class Chat
                         Title = "新聊天",
                         PromptSettings = new FluentChat.Chat.PromptSettings
                         {
-                            Temperature = executionSettings.Temperature
-                        }
+                            Temperature = executionSettings.Temperature,
+                        },
                     }
                 );
                 chatSessions.Insert(0, _chatSession);
@@ -153,13 +157,14 @@ public partial class Chat
         chatHistory.AddUserMessage(user.Content);
 
         question = null;
+        _visible = false;
 
         await ChatAppService.CreateMessageAsync(
             new CreateMessageDto
             {
                 SessionId = _chatSession.Id,
                 Role = user.Role,
-                Content = user.Content
+                Content = user.Content,
             }
         );
         _ = Task.Factory.StartNew(async () => await ReceiveChatContentAsync());
@@ -170,7 +175,7 @@ public partial class Chat
         var assistant = new ChatMessageDto
         {
             Role = AuthorRole.Assistant.Label,
-            Content = "思考中..."
+            Content = "思考中...",
         };
         _chatSession.Messages.Add(assistant);
         answer.Clear();
@@ -180,15 +185,25 @@ public partial class Chat
             var message in chatService.GetStreamingChatMessageContentsAsync(
                 chatHistory,
                 executionSettings,
-                Kernel
+                Kernel,
+                _cts.Token
             )
         )
         {
+            if (_cts.IsCancellationRequested)
+            {
+                Logger.LogInformation("user cancel AI generation");
+                break;
+            }
+
             answer.Append(message.Content);
             assistant.Content = answer.ToString();
             await InvokeAsync(StateHasChanged);
             await JS.InvokeVoidAsync("scrollToBottom", "dataList");
         }
+
+        _visible = true;
+        await InvokeAsync(StateHasChanged);
 
         chatHistory.AddAssistantMessage(assistant.Content);
         await ChatAppService.CreateMessageAsync(
@@ -196,8 +211,14 @@ public partial class Chat
             {
                 SessionId = _chatSession.Id,
                 Role = assistant.Role,
-                Content = assistant.Content
+                Content = assistant.Content,
             }
         );
+    }
+
+    async Task StopAsync()
+    {
+        await _cts.CancelAsync();
+        _visible = true;
     }
 }
