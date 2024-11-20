@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="OllamaSharp" Version="4.0.7" />
-  </ItemGroup>
+		<PackageReference Include="Volo.Abp.Core" Version="8.3.0" />
+	</ItemGroup>
 
 </Project>

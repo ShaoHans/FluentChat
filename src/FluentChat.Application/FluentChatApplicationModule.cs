@@ -19,7 +19,7 @@ namespace FluentChat;
     typeof(AbpAccountApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
-    (typeof(AbpBackgroundJobsModule))
+    typeof(AbpBackgroundJobsModule)
     )]
 public class FluentChatApplicationModule : AbpModule
 {

@@ -1,6 +1,8 @@
-﻿namespace FluentChat.AI.Providers;
+﻿using Volo.Abp.DependencyInjection;
 
-public interface IModelProvider
+namespace FluentChat.AI.Providers;
+
+public interface IModelProvider : ITransientDependency
 {
     string Name { get; }
 }
