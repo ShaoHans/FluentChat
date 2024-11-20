@@ -5,4 +5,6 @@ namespace FluentChat.AI.Providers;
 public interface IModelProvider : ITransientDependency
 {
     string Name { get; }
+
+    Task<IReadOnlyList<string>> GetModelsAsync();
 }
