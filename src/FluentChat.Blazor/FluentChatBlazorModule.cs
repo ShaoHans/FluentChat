@@ -2,6 +2,8 @@
 using System.IO;
 using Abp.RadzenUI;
 using Abp.RadzenUI.Localization;
+
+using FluentChat.AI;
 using FluentChat.Blazor.Components.Pages;
 using FluentChat.Blazor.Menus;
 using FluentChat.EntityFrameworkCore;
@@ -42,6 +44,7 @@ namespace FluentChat.Blazor;
     typeof(FluentChatApplicationModule),
     typeof(FluentChatEntityFrameworkCoreModule),
     typeof(FluentChatHttpApiModule),
+    typeof(FluentChatAIModule),
     typeof(AbpRadzenUIModule),
     typeof(AbpAspNetCoreMultiTenancyModule),
     typeof(AbpAspNetCoreAuthenticationJwtBearerModule),
@@ -125,7 +128,7 @@ public class FluentChatBlazorModule : AbpModule
         ConfigureVirtualFileSystem(hostingEnvironment);
         ConfigureSwaggerServices(context.Services);
         ConfigureAutoApiControllers();
-        ConfigureOllama(context.Services);
+        //ConfigureOllama(context.Services);
     }
 
     private void ConfigureAbpRadzenUI()

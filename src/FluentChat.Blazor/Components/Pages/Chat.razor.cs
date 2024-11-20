@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
+using FluentChat.AI;
+using FluentChat.AI.Providers;
 using FluentChat.Chats;
 using FluentChat.Chats.Dtos;
 using Microsoft.AspNetCore.Components;
@@ -18,8 +21,8 @@ namespace FluentChat.Blazor.Components.Pages;
 
 public partial class Chat
 {
-    [Inject]
-    public Kernel Kernel { get; set; } = default!;
+    //[Inject]
+    //public Kernel Kernel { get; set; } = default!;
 
     [Inject]
     public IJSRuntime JS { get; set; } = default!;
@@ -29,6 +32,9 @@ public partial class Chat
 
     [Inject]
     public IChatAppService ChatAppService { get; set; } = default!;
+
+    [Inject]
+    public IModelProvider ModelProvider { get; set; } = default!;
 
     [Parameter]
     public string? Id { get; set; }
@@ -42,12 +48,12 @@ public partial class Chat
     private ChatSessionDto _chatSession = new();
     private CancellationTokenSource _cts = new();
     private bool _visible = true;
-
+    private Kernel _kernel = default!;
     protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
-
-        chatService = Kernel.GetRequiredService<IChatCompletionService>("Ollama");
+        _kernel = KernelFactory.Get("Ollama", "llama3.2");
+        chatService = _kernel.GetRequiredService<IChatCompletionService>("Ollama");
         chatSessions = (
             await ChatAppService.GetPagedAsync(
                 new GetSessionPagedRequestDto { MaxResultCount = 1000 }
@@ -185,7 +191,7 @@ public partial class Chat
             var message in chatService.GetStreamingChatMessageContentsAsync(
                 chatHistory,
                 executionSettings,
-                Kernel,
+                _kernel,
                 _cts.Token
             )
         )
