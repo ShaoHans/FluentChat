@@ -54,7 +54,9 @@ public partial class Chat
     protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
-        
+
+        await LoadAIModels();
+
         chatSessions =
         [
             .. (
@@ -68,8 +70,6 @@ public partial class Chat
         {
             ChangeUrl(chatSessions.First().Id);
         }
-
-        await LoadAIModels();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -158,6 +158,7 @@ public partial class Chat
             else
             {
                 _chatSession = session;
+                _selectedModel = session.Model;
             }
 
             foreach (var message in _chatSession.Messages)
