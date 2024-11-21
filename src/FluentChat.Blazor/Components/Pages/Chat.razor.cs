@@ -54,11 +54,11 @@ public partial class Chat
         base.OnInitialized();
         _kernel = KernelFactory.Get("Ollama", "llama3.2");
         chatService = _kernel.GetRequiredService<IChatCompletionService>("Ollama");
-        chatSessions = (
+        chatSessions = [.. (
             await ChatAppService.GetPagedAsync(
                 new GetSessionPagedRequestDto { MaxResultCount = 1000 }
             )
-        ).Items.ToList();
+        ).Items];
 
         if (chatSessions.Count > 0 && string.IsNullOrEmpty(Id))
         {
