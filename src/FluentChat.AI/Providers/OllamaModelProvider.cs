@@ -2,13 +2,13 @@
 
 namespace FluentChat.AI.Providers;
 
-public class OllamaProvider : IModelProvider
+public class OllamaModelProvider : IModelProvider
 {
     public string Name => "Ollama";
 
     private readonly OllamaApiClient _client;
 
-    public OllamaProvider()
+    public OllamaModelProvider()
     {
         _client = new OllamaApiClient(new Uri("http://localhost:11434"));
     }

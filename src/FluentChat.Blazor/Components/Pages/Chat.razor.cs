@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
 using FluentChat.AI;
 using FluentChat.AI.Providers;
 using FluentChat.Chats;
@@ -21,9 +20,6 @@ namespace FluentChat.Blazor.Components.Pages;
 
 public partial class Chat
 {
-    //[Inject]
-    //public Kernel Kernel { get; set; } = default!;
-
     [Inject]
     public IJSRuntime JS { get; set; } = default!;
 
