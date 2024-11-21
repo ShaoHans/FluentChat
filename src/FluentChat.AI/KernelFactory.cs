@@ -1,4 +1,6 @@
-﻿using Microsoft.SemanticKernel;
+﻿using FluentChat.Chat;
+
+using Microsoft.SemanticKernel;
 
 namespace FluentChat.AI;
 
@@ -10,7 +12,7 @@ public static class KernelFactory
 
         switch (provider)
         {
-            case "Ollama":
+            case ModelProviderNames.Ollama:
 #pragma warning disable SKEXP0070
                 builder.Services.AddOllamaChatCompletion(
                     model,

@@ -14,4 +14,8 @@
 		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.30.0-alpha" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FluentChat.Domain.Shared\FluentChat.Domain.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

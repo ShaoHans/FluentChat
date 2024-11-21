@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentChat.AI;
 using FluentChat.AI.Providers;
+using FluentChat.Chat;
 using FluentChat.Chats;
 using FluentChat.Chats.Dtos;
 using Microsoft.AspNetCore.Components;
@@ -48,8 +49,8 @@ public partial class Chat
     protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
-        _kernel = KernelFactory.Get("Ollama", "llama3.2");
-        chatService = _kernel.GetRequiredService<IChatCompletionService>("Ollama");
+        _kernel = KernelFactory.Get(ModelProviderNames.Ollama, "llama3.2");
+        chatService = _kernel.GetRequiredService<IChatCompletionService>(ModelProviderNames.Ollama);
         chatSessions = [.. (
             await ChatAppService.GetPagedAsync(
                 new GetSessionPagedRequestDto { MaxResultCount = 1000 }
@@ -94,9 +95,9 @@ public partial class Chat
                     {
                         Id = sessionId,
                         Model = "llama3.2",
-                        Service = "ollama",
+                        Service = ModelProviderNames.Ollama,
                         Title = "ÐÂÁÄÌì",
-                        PromptSettings = new FluentChat.Chat.PromptSettings
+                        PromptSettings = new PromptSettings
                         {
                             Temperature = executionSettings.Temperature,
                         },

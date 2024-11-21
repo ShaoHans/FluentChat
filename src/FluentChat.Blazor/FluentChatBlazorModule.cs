@@ -252,14 +252,6 @@ public class FluentChatBlazorModule : AbpModule
         });
     }
 
-    private void ConfigureOllama(IServiceCollection services)
-    {
-        services.AddKernel();
-#pragma warning disable SKEXP0070
-        services.AddOllamaChatCompletion("llama3.2", new Uri("http://localhost:11434"), "Ollama");
-#pragma warning restore SKEXP0070
-    }
-
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         var env = context.GetEnvironment();

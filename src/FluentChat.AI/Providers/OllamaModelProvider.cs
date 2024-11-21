@@ -1,10 +1,12 @@
-﻿using OllamaSharp;
+﻿using FluentChat.Chat;
+
+using OllamaSharp;
 
 namespace FluentChat.AI.Providers;
 
 public class OllamaModelProvider : IModelProvider
 {
-    public string Name => "Ollama";
+    public string Name => ModelProviderNames.Ollama;
 
     private readonly OllamaApiClient _client;
 
