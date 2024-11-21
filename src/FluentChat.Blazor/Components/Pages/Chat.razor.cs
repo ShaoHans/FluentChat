@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentChat.AI;
 using FluentChat.AI.Providers;
+using FluentChat.AIModels.Dtos;
 using FluentChat.Chat;
 using FluentChat.Chats;
 using FluentChat.Chats.Dtos;
@@ -16,6 +17,7 @@ using Microsoft.JSInterop;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Radzen;
 
 namespace FluentChat.Blazor.Components.Pages;
 
@@ -42,25 +44,33 @@ public partial class Chat
     private ChatHistory chatHistory = new();
     private OpenAIPromptExecutionSettings executionSettings = new() { Temperature = 0.1 };
     private List<ChatSessionDto> chatSessions = [];
+    private List<AIModelDto> _aiModels = [];
     private ChatSessionDto _chatSession = new();
     private CancellationTokenSource _cts = new();
     private bool _visible = true;
     private Kernel _kernel = default!;
+    private string? _selectedModel;
+
     protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
         _kernel = KernelFactory.Get(ModelProviderNames.Ollama, "llama3.2");
         chatService = _kernel.GetRequiredService<IChatCompletionService>(ModelProviderNames.Ollama);
-        chatSessions = [.. (
-            await ChatAppService.GetPagedAsync(
-                new GetSessionPagedRequestDto { MaxResultCount = 1000 }
-            )
-        ).Items];
+        chatSessions =
+        [
+            .. (
+                await ChatAppService.GetPagedAsync(
+                    new GetSessionPagedRequestDto { MaxResultCount = 1000 }
+                )
+            ).Items,
+        ];
 
         if (chatSessions.Count > 0 && string.IsNullOrEmpty(Id))
         {
             ChangeUrl(chatSessions.First().Id);
         }
+
+        await LoadAIModels();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -68,6 +78,41 @@ public partial class Chat
         if (!firstRender)
         {
             await JS.InvokeVoidAsync("scrollToBottom", "datalist");
+        }
+    }
+
+    private async Task LoadAIModels()
+    {
+        var ollamaModels = (await ModelProvider.GetModelsAsync()).Select(x => new AIModelDto
+        {
+            Provider = ModelProviderNames.Ollama,
+            Name = x,
+        });
+
+        _aiModels = ollamaModels
+            .GroupBy(x => x.Provider)
+            .SelectMany(x =>
+                new AIModelDto[] { new() { Provider = x.Key } }.Concat(
+                    x.Select(i => new AIModelDto { Name = i.Name })
+                )
+            )
+            .ToList();
+
+        _selectedModel = ollamaModels.FirstOrDefault()?.Name;
+    }
+
+    void AIModelItemRender(DropDownItemRenderEventArgs<string?> args)
+    {
+        var data = (AIModelDto)args.Item;
+        if (data.Provider != null)
+        {
+            // Use this code to prevent default item selection for group items.
+            args.Disabled = true;
+            args.Attributes.Add("style", "opacity: 1");
+        }
+        else
+        {
+            args.Attributes.Add("style", "margin-inline-start: 1rem");
         }
     }
 
@@ -139,6 +184,12 @@ public partial class Chat
 
     async Task SendAsync()
     {
+        if (string.IsNullOrEmpty(_selectedModel))
+        {
+            await Message.Warn("请选择聊天模型");
+            return;
+        }
+
         if (string.IsNullOrEmpty(question))
         {
             return;

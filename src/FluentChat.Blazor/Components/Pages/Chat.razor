@@ -21,6 +21,22 @@
         </RadzenCard>
 
         <RadzenCard class="rz-p-1 rz-text-align-center" style="height: 100%; width: 100%;">
+            <RadzenStack Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Start" Gap="0.5rem" class="rz-p-12">
+                <RadzenLabel Text="选择模型" Component="DropDownGrouping" />
+                <RadzenDropDown @bind-Value="@_selectedModel"
+                                AllowFiltering="true"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Name="DropDownGrouping"
+                                ItemRender="AIModelItemRender"
+                                Data=@_aiModels ValueProperty="Name" TextProperty="Name">
+                    <Template>
+                        <span style="display:inline-block; font-weight: @(context.Provider != null ? "bold" : "normal");">
+                            @(context.Provider ?? context.Name)
+                        </span>
+                    </Template>
+                </RadzenDropDown>
+            </RadzenStack>
+
             <RadzenDataList id="datalist" AllowVirtualization="true" Style="height:80%;overflow-y:auto;"
                             WrapItems="false" AllowPaging="false"
                             Data="@_chatSession.Messages" TItem="ChatMessageDto">
