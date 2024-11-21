@@ -10,8 +10,8 @@
     <PackageReference Include="OllamaSharp" Version="4.0.7" />
 		<PackageReference Include="Volo.Abp.Autofac" Version="8.3.0" />
 		<PackageReference Include="Volo.Abp.Core" Version="8.3.0" />
-		<PackageReference Include="Microsoft.SemanticKernel" Version="1.28.0" />
-		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.28.0-alpha" />
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.30.0" />
+		<PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.30.0-alpha" />
 	</ItemGroup>
 
 </Project>
