@@ -54,8 +54,7 @@ public partial class Chat
     protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
-        _kernel = KernelFactory.Get(ModelProviderNames.Ollama, "llama3.2");
-        chatService = _kernel.GetRequiredService<IChatCompletionService>(ModelProviderNames.Ollama);
+        
         chatSessions =
         [
             .. (
@@ -116,6 +115,12 @@ public partial class Chat
         }
     }
 
+    void AIModelChange()
+    {
+        _kernel = KernelFactory.Get(ModelProviderNames.Ollama, _selectedModel!);
+        chatService = _kernel.GetRequiredService<IChatCompletionService>(ModelProviderNames.Ollama);
+    }
+
     void ChangeUrl(Guid sessionId)
     {
         Navigation.NavigateTo($"/chat/{sessionId}", false);
@@ -139,7 +144,7 @@ public partial class Chat
                     new SaveSessionDto
                     {
                         Id = sessionId,
-                        Model = "llama3.2",
+                        Model = _selectedModel!,
                         Service = ModelProviderNames.Ollama,
                         Title = "ÐÂÁÄÌì",
                         PromptSettings = new PromptSettings
