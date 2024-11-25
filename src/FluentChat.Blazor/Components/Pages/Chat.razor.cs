@@ -105,7 +105,6 @@ public partial class Chat
         var data = (AIModelDto)args.Item;
         if (data.Provider != null)
         {
-            // Use this code to prevent default item selection for group items.
             args.Disabled = true;
             args.Attributes.Add("style", "opacity: 1");
         }
