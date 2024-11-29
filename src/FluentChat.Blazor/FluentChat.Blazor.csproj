@@ -21,7 +21,7 @@
     <ProjectReference Include="..\FluentChat.HttpApi\FluentChat.HttpApi.csproj" />
     <ProjectReference Include="..\FluentChat.EntityFrameworkCore\FluentChat.EntityFrameworkCore.csproj" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
 		<PackageReference Include="IdentityModel" Version="7.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
